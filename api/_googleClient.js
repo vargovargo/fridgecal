@@ -14,8 +14,9 @@ export function createOAuthClient() {
 export function getAuthUrl(client) {
   return client.generateAuthUrl({
     access_type: 'offline',
-    prompt: 'consent', // ensures we get a refresh_token every time
+    prompt: 'consent',
     scope: ['https://www.googleapis.com/auth/calendar.events'],
+    redirect_uri: process.env.GOOGLE_REDIRECT_URI,
   })
 }
 
