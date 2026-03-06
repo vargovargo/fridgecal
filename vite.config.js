@@ -8,6 +8,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      workbox: {
+        navigateFallbackDenylist: [/^\/api\//],
+      },
       manifest: {
         name: 'FridgeCal',
         short_name: 'FridgeCal',
