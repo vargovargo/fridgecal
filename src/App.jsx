@@ -70,7 +70,7 @@ export default function App() {
       {calendarConnected === false && (
         <div className="auth-banner">
           <span>Connect Google Calendar to sync events</span>
-          <a href="/api/auth/login" className="btn-connect">Connect</a>
+          <button className="btn-connect" onClick={() => window.location.assign("/api/auth/login")}>Connect</button>
         </div>
       )}
 
