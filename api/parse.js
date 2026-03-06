@@ -1,6 +1,6 @@
-const Anthropic = require('@anthropic-ai/sdk')
+const { default: Anthropic } = require('@anthropic-ai/sdk')
 
-const client = new Anthropic.default({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const FAMILY_CONTEXT = `
 You are parsing a family whiteboard calendar photo for the Vargo family. Extract all events and return structured JSON.
