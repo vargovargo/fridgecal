@@ -1,6 +1,6 @@
-import Anthropic from '@anthropic-ai/sdk'
+const Anthropic = require('@anthropic-ai/sdk')
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new Anthropic.default({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const FAMILY_CONTEXT = `
 You are parsing a family whiteboard calendar photo for the Vargo family. Extract all events and return structured JSON.
@@ -34,7 +34,7 @@ Return a JSON array of events. Each event:
 If you cannot determine the year from context, assume the current year. Return ONLY the JSON array, no other text.
 `
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -44,7 +44,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid image data' })
   }
 
-  // Strip the data URL prefix to get base64
   const [header, base64Data] = image.split(',')
   const mediaType = header.match(/data:(image\/\w+);/)?.[1] || 'image/jpeg'
 
@@ -58,11 +57,7 @@ export default async function handler(req, res) {
           content: [
             {
               type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: base64Data,
-              },
+              source: { type: 'base64', media_type: mediaType, data: base64Data },
             },
             {
               type: 'text',
@@ -74,7 +69,6 @@ export default async function handler(req, res) {
     })
 
     const text = message.content[0].text.trim()
-    // Extract JSON array from the response
     const jsonMatch = text.match(/\[[\s\S]*\]/)
     if (!jsonMatch) {
       return res.status(422).json({ error: 'Could not extract events from image' })

@@ -1,17 +1,17 @@
-import { google } from 'googleapis'
+const { google } = require('googleapis')
 
-export const CALENDAR_ID =
+const CALENDAR_ID =
   'cd7ea915000af330d4e4354d5fac9c44956fb8406e93745a21fd6348f34dc927@group.calendar.google.com'
 
-export function createOAuthClient() {
+function createOAuthClient() {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI // e.g. https://your-app.vercel.app/api/auth/callback
+    process.env.GOOGLE_REDIRECT_URI
   )
 }
 
-export function getAuthUrl(client) {
+function getAuthUrl(client) {
   return client.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent',
@@ -20,8 +20,7 @@ export function getAuthUrl(client) {
   })
 }
 
-// Parse tokens from cookie string
-export function getTokensFromCookie(cookieHeader) {
+function getTokensFromCookie(cookieHeader) {
   if (!cookieHeader) return null
   const match = cookieHeader.match(/fridgecal_tokens=([^;]+)/)
   if (!match) return null
@@ -32,13 +31,14 @@ export function getTokensFromCookie(cookieHeader) {
   }
 }
 
-// Build Set-Cookie header value
-export function buildTokenCookie(tokens) {
+function buildTokenCookie(tokens) {
   const value = encodeURIComponent(JSON.stringify(tokens))
-  const maxAge = 60 * 60 * 24 * 60 // 60 days
+  const maxAge = 60 * 60 * 24 * 60
   return `fridgecal_tokens=${value}; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}; Path=/`
 }
 
-export function clearTokenCookie() {
+function clearTokenCookie() {
   return `fridgecal_tokens=; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Path=/`
 }
+
+module.exports = { CALENDAR_ID, createOAuthClient, getAuthUrl, getTokensFromCookie, buildTokenCookie, clearTokenCookie }

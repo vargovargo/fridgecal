@@ -1,12 +1,7 @@
-import { google } from 'googleapis'
-import {
-  createOAuthClient,
-  getTokensFromCookie,
-  buildTokenCookie,
-  CALENDAR_ID,
-} from './_googleClient.js'
+const { google } = require('googleapis')
+const { createOAuthClient, getTokensFromCookie, buildTokenCookie, CALENDAR_ID } = require('./_googleClient')
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -24,7 +19,6 @@ export default async function handler(req, res) {
   const client = createOAuthClient()
   client.setCredentials(tokens)
 
-  // Auto-refresh tokens if needed and persist updated tokens
   client.on('tokens', (newTokens) => {
     const merged = { ...tokens, ...newTokens }
     res.setHeader('Set-Cookie', buildTokenCookie(merged))
@@ -45,7 +39,6 @@ export default async function handler(req, res) {
 }
 
 function toGoogleDateTime(date, time, durationMinutes) {
-  // date: "YYYY-MM-DD", time: "HH:MM" or null, durationMinutes: number or null
   if (time) {
     const start = new Date(`${date}T${time}:00`)
     const end = new Date(start.getTime() + (durationMinutes || 60) * 60 * 1000)
@@ -54,21 +47,14 @@ function toGoogleDateTime(date, time, durationMinutes) {
       end: { dateTime: end.toISOString(), timeZone: 'America/Los_Angeles' },
     }
   }
-  // All-day event
-  return {
-    start: { date },
-    end: { date },
-  }
+  return { start: { date }, end: { date } }
 }
 
 async function createCalendarEvent(calendar, event) {
   const { title, date, time, duration, location, notes, member } = event
   const { start, end } = toGoogleDateTime(date, time, duration)
 
-  const description = [
-    member ? `Person: ${member}` : null,
-    notes || null,
-  ]
+  const description = [member ? `Person: ${member}` : null, notes || null]
     .filter(Boolean)
     .join('\n')
 
