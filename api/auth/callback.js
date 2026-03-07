@@ -13,10 +13,14 @@ module.exports = async function handler(req, res) {
   try {
     const client = createOAuthClient()
     const { tokens } = await client.getToken(code)
-    res.setHeader('Set-Cookie', buildTokenCookie(tokens))
-    res.redirect(302, '/?auth=success')
+    res.writeHead(302, {
+      'Set-Cookie': buildTokenCookie(tokens),
+      'Location': '/?auth=success',
+    })
+    res.end()
   } catch (err) {
     console.error('OAuth callback error:', err)
-    res.redirect(302, `/?auth=error&reason=${encodeURIComponent(err.message)}`)
+    res.writeHead(302, { 'Location': `/?auth=error&reason=${encodeURIComponent(err.message)}` })
+    res.end()
   }
 }
