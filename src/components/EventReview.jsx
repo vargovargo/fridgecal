@@ -66,6 +66,9 @@ export default function EventReview({ events, onBack, calendarConnected }) {
           {syncResult?.synced} event{syncResult?.synced !== 1 ? 's' : ''} added
           {syncResult?.failed?.length > 0 && ` (${syncResult.failed.length} failed)`}
         </p>
+        {syncResult?.failed?.length > 0 && (
+          <p style={{ fontSize: '0.8em', color: '#c00' }}>{syncResult.failed[0]}</p>
+        )}
         <button className="btn-primary" onClick={onBack}>
           Scan another calendar
         </button>
