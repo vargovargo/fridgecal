@@ -33,7 +33,12 @@ module.exports = async function handler(req, res) {
   const succeeded = results.filter((r) => r.status === 'fulfilled').length
   const failed = results
     .filter((r) => r.status === 'rejected')
-    .map((r) => r.reason?.message || 'Unknown error')
+    .map((r) => {
+      const reason = r.reason
+      const msg = reason?.message || reason?.errors?.[0]?.message || JSON.stringify(reason) || 'Unknown error'
+      console.error('Sync event failed:', msg, reason?.status, reason?.code)
+      return msg
+    })
 
   return res.status(200).json({ synced: succeeded, failed })
 }
