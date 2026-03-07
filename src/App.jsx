@@ -126,7 +126,7 @@ async function parseWhiteboardImage(imageDataUrl) {
     body: JSON.stringify({ image: resized }),
   })
   if (!res.ok) {
-    const { error } = await res.json().catch(() => ({ error: 'Server error' }))
+    const { error } = await res.json().catch(() => ({ error: `Server error (${res.status})` }))
     throw new Error(error || 'Failed to parse image')
   }
   return res.json()
