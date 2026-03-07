@@ -48,6 +48,7 @@ module.exports = async function handler(req, res) {
   const mediaType = header.match(/data:(image\/\w+);/)?.[1] || 'image/jpeg'
 
   try {
+    const today = new Date().toISOString().split('T')[0]
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
@@ -61,7 +62,7 @@ module.exports = async function handler(req, res) {
             },
             {
               type: 'text',
-              text: FAMILY_CONTEXT + '\n\nPlease parse this whiteboard calendar photo and return the events as JSON.',
+              text: FAMILY_CONTEXT + `\n\nToday's date is ${today}. All events on this whiteboard are within the next 2–3 weeks from today. Use this to assign correct year and month to each event.\n\nPlease parse this whiteboard calendar photo and return the events as JSON.`,
             },
           ],
         },
