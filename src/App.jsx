@@ -103,11 +103,27 @@ export default function App() {
   )
 }
 
+async function resizeImage(dataUrl, maxDimension = 1600) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      const scale = Math.min(1, maxDimension / Math.max(img.width, img.height))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+      resolve(canvas.toDataURL('image/jpeg', 0.85))
+    }
+    img.src = dataUrl
+  })
+}
+
 async function parseWhiteboardImage(imageDataUrl) {
+  const resized = await resizeImage(imageDataUrl)
   const res = await fetch('/api/parse', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: imageDataUrl }),
+    body: JSON.stringify({ image: resized }),
   })
   if (!res.ok) {
     const { error } = await res.json().catch(() => ({ error: 'Server error' }))
