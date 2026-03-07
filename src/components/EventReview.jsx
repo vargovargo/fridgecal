@@ -64,7 +64,8 @@ export default function EventReview({ events, onBack, calendarConnected }) {
         <h2>Synced to Google Calendar</h2>
         <p>
           {syncResult?.synced} event{syncResult?.synced !== 1 ? 's' : ''} added
-          {syncResult?.failed?.length > 0 && ` (${syncResult.failed.length} failed)`}
+          {syncResult?.skipped > 0 && `, ${syncResult.skipped} already existed`}
+          {syncResult?.failed?.length > 0 && `, ${syncResult.failed.length} failed`}
         </p>
         {syncResult?.failed?.length > 0 && (
           <p style={{ fontSize: '0.8em', color: '#c00' }}>{syncResult.failed[0]}</p>

@@ -26,11 +26,20 @@ module.exports = async function handler(req, res) {
 
   const calendar = google.calendar({ version: 'v3', auth: client })
 
+  // Fetch existing events in the date range to detect duplicates
+  const dates = events.map((e) => e.date).filter(Boolean).sort()
+  const existingTitles = await getExistingEventTitles(calendar, dates[0], dates[dates.length - 1])
+
   const results = await Promise.allSettled(
-    events.map((event) => createCalendarEvent(calendar, event))
+    events.map((event) => {
+      const key = `${event.title}|${event.date}`.toLowerCase()
+      if (existingTitles.has(key)) return Promise.resolve('skipped')
+      return createCalendarEvent(calendar, event)
+    })
   )
 
-  const succeeded = results.filter((r) => r.status === 'fulfilled').length
+  const succeeded = results.filter((r) => r.status === 'fulfilled' && r.value !== 'skipped').length
+  const skipped = results.filter((r) => r.status === 'fulfilled' && r.value === 'skipped').length
   const failed = results
     .filter((r) => r.status === 'rejected')
     .map((r) => {
@@ -40,7 +49,7 @@ module.exports = async function handler(req, res) {
       return msg
     })
 
-  return res.status(200).json({ synced: succeeded, failed })
+  return res.status(200).json({ synced: succeeded, skipped, failed })
 }
 
 function toGoogleDateTime(date, time, durationMinutes) {
@@ -53,6 +62,26 @@ function toGoogleDateTime(date, time, durationMinutes) {
     }
   }
   return { start: { date }, end: { date } }
+}
+
+async function getExistingEventTitles(calendar, minDate, maxDate) {
+  try {
+    const res = await calendar.events.list({
+      calendarId: CALENDAR_ID,
+      timeMin: new Date(`${minDate}T00:00:00`).toISOString(),
+      timeMax: new Date(`${maxDate}T23:59:59`).toISOString(),
+      singleEvents: true,
+      maxResults: 500,
+    })
+    const titles = new Set()
+    for (const e of res.data.items || []) {
+      const date = (e.start?.date || e.start?.dateTime || '').slice(0, 10)
+      titles.add(`${e.summary}|${date}`.toLowerCase())
+    }
+    return titles
+  } catch {
+    return new Set() // if lookup fails, proceed without duplicate check
+  }
 }
 
 async function createCalendarEvent(calendar, event) {
