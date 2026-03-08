@@ -9,7 +9,7 @@ This file is injected as system context into every Claude API parse call. Update
 - `OTF` → Orange Theory Fitness class, Solano Ave; weekdays 7:15–8:30am
 
 ### Leo
-- `CCT` → California Climbing Team practice at Bridgestone, El Cerrito; weekdays typically 4–6pm
+- `CCT` → California Climbing Team practice at Bridges Rock Gym, El Cerrito; weekdays typically 4–6pm
 - `Michael` → recurring weekly or biweekly appointment, typically 3:30–4:30pm
 
 ### Benton
@@ -37,6 +37,8 @@ This file is injected as system context into every Claude API parse call. Update
 - **Row position**: ignore for time — parse time from written text only
 - **Notes / To Do column**: ignore — rightmost area is informal, not calendar events
 - **Vertical cell structure**: each written item within a day column is a separate event
+- **Date numbers**: numbers near the top of each day column (often written in black) are the actual calendar dates for that column — use them to determine YYYY-MM-DD
+- **Past dates**: if a column's date has already passed, keep it as-is — do not advance it to the next week. The board may not have been erased/updated yet.
 
 ## Ownership Assignment
 
@@ -48,7 +50,7 @@ This file is injected as system context into every Claude API parse call. Update
 ```
 "OTF" on a weekday → Lauren, Orange Theory Fitness, 7:15-8:30am, Solano Ave
 "Rich" at top of day → Lauren, at office, 9am-4pm
-"CCT" on weekday → Leo, climbing practice, 4-6pm, Bridgestone El Cerrito
+"CCT" on weekday → Leo, climbing practice, 4-6pm, Bridges Rock Gym El Cerrito
 "Michael" → Leo, appointment, 3:30-4:30pm
 "Bay City" → Benton, basketball practice, Bay City location
 "Heredity" → Benton, Science Olympiad - Heredity event

@@ -54,11 +54,12 @@ module.exports = async function handler(req, res) {
 
 function toGoogleDateTime(date, time, durationMinutes) {
   if (time) {
-    const start = new Date(`${date}T${time}:00`)
-    const end = new Date(start.getTime() + (durationMinutes || 60) * 60 * 1000)
+    const [hours, minutes] = time.split(':').map(Number)
+    const endTotalMins = hours * 60 + minutes + (durationMinutes || 60)
+    const endTime = `${String(Math.floor(endTotalMins / 60) % 24).padStart(2, '0')}:${String(endTotalMins % 60).padStart(2, '0')}`
     return {
-      start: { dateTime: start.toISOString(), timeZone: 'America/Los_Angeles' },
-      end: { dateTime: end.toISOString(), timeZone: 'America/Los_Angeles' },
+      start: { dateTime: `${date}T${time}:00`, timeZone: 'America/Los_Angeles' },
+      end: { dateTime: `${date}T${endTime}:00`, timeZone: 'America/Los_Angeles' },
     }
   }
   return { start: { date }, end: { date } }

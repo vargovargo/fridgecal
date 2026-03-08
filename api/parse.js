@@ -7,7 +7,7 @@ You are parsing a family whiteboard calendar photo for the Vargo family. Extract
 
 ## Family Members
 - **Lauren**: working from her Rich office ("Rich" at top of day = ~9am-4pm); "OTF" = Orange Theory Fitness, Solano Ave, weekdays 7:15-8:30am
-- **Leo**: "CCT" = California Climbing Team practice at Bridgestone, El Cerrito, weekdays ~4-6pm; "Michael" = recurring appointment ~3:30-4:30pm
+- **Leo**: "CCT" = California Climbing Team practice at Bridges Rock Gym, El Cerrito, weekdays ~4-6pm; "Michael" = recurring appointment ~3:30-4:30pm
 - **Benton**: basketball (Bay City, BayCityClinic, BAtCKY/BATCKY = basketball locations); Science Olympiad events (Heredity, Remote Sensing, SciBowl, Sci Oly)
 - **Jason**: typically coaching/transport; "Remote Sensing" = Science Olympiad event he coaches
 - **Family**: use for anything not clearly assigned to one person
@@ -18,6 +18,8 @@ You are parsing a family whiteboard calendar photo for the Vargo family. Extract
 - Ignore the rightmost notes/to-do column — not calendar events
 - Each written item within a day column is a separate event
 - If ownership is ambiguous, assign to Family
+- **Date numbers**: numbers written near the top of each day column (often in black) are the actual dates for that column — use them directly to assign YYYY-MM-DD
+- **Past dates are valid**: if a column's date has already passed, keep it as-is — do not advance it to the next occurrence. The family may not have erased old entries yet.
 
 ## Output Format
 Return a JSON array of events. Each event:
