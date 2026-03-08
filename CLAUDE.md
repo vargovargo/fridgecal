@@ -14,12 +14,14 @@ This file is injected as system context into every Claude API parse call. Update
 
 ### Benton
 - Primarily basketball; locations and times vary — parse whatever is written, no fixed defaults
-- `Bay City` / `BayCityClinic` → basketball practice (location: Bay City)
+- `Bay City` / `BayCityClinic` → Bay City is Benton's basketball **team** (not just a location); any Bay City entry = Benton's basketball
 - `BAtCKY` / `BATCKY` → basketball + location code (e.g. ECH = gym/court identifier)
 - `Heredity` → Science Olympiad event
 - `Remote Sensing` → Science Olympiad event; Jason coaches this one
-- `SciBowl` → Science Bowl competition or practice (Benton and/or Leo)
+- `Dynamic Planet` / `DYNAM PLANET` → Science Olympiad event (Benton)
+- `SciBowl` → Science Bowl competition or practice (Benton)
 - `Sci Oly` / `Science Olympiad` → competitive team event, may involve multiple family members
+- `Regionals` / `REGIONALS` → Science Olympiad Regionals, all-day, may span multiple days — assign to Family (whole family attends)
 
 ### Jason
 - No shorthands defined yet
@@ -35,14 +37,17 @@ This file is injected as system context into every Claude API parse call. Update
 
 - **Color coding**: ignore — not applied consistently on the whiteboard
 - **Row position**: ignore for time — parse time from written text only
-- **Notes / To Do column**: ignore — rightmost area is informal, not calendar events
+- **Notes column** (top of rightmost area): bulleted items with dates are upcoming events — parse them as calendar events
+- **To Do column** (bottom of rightmost area): ignore — tasks, not calendar events
 - **Vertical cell structure**: each written item within a day column is a separate event
+- **Multi-day events**: text (or an arrow) spanning multiple day columns = one all-day event per day covered; applies to travel, trips, competitions, etc.
 - **Date numbers**: numbers near the top of each day column (often written in black) are the actual calendar dates for that column — use them to determine YYYY-MM-DD
 - **Past dates**: if a column's date has already passed, keep it as-is — do not advance it to the next week. The board may not have been erased/updated yet.
 
 ## Ownership Assignment
 
 - If a name or known shorthand is present → assign to that person
+- First initials count: `B` = Benton, `L` = Leo — overrides default assumptions (e.g. "Bay City L" = Leo's basketball)
 - If ambiguous → assign to Family calendar
 
 ## Annotated Examples

@@ -8,18 +8,23 @@ You are parsing a family whiteboard calendar photo for the Vargo family. Extract
 ## Family Members
 - **Lauren**: working from her Rich office ("Rich" at top of day = ~9am-4pm); "OTF" = Orange Theory Fitness, Solano Ave, weekdays 7:15-8:30am
 - **Leo**: "CCT" = California Climbing Team practice at Bridges Rock Gym, El Cerrito, weekdays ~4-6pm; "Michael" = recurring appointment ~3:30-4:30pm
-- **Benton**: basketball (Bay City, BayCityClinic, BAtCKY/BATCKY = basketball locations); Science Olympiad events (Heredity, Remote Sensing, SciBowl, Sci Oly)
+- **Benton**: plays for **Bay City** basketball team — any "Bay City", "BayCityClinic", "BAtCKY"/"BATCKY" entry is Benton's basketball (Bay City is the team name, not just a location); Science Olympiad events (Heredity, Remote Sensing, Dynamic Planet/DYNAM PLANET, SciBowl)
 - **Jason**: typically coaching/transport; "Remote Sensing" = Science Olympiad event he coaches
-- **Family**: use for anything not clearly assigned to one person
+- **Family**: use for anything not clearly assigned to one person; "Regionals"/"REGIONALS" = Science Olympiad Regionals, all-day family event, may span multiple days
 
 ## Parsing Rules
 - Ignore color coding on the whiteboard — not applied consistently
 - Ignore row position for time — parse time from written text only
-- Ignore the rightmost notes/to-do column — not calendar events
+- The rightmost column is split into two sections: **NOTES** (top, bulleted dated items) and **TO DO** (bottom)
+  - **NOTES items**: parse these as calendar events — they are dated reminders of upcoming events (e.g. "3/14 Leo Comp" = event on March 14)
+  - **TO DO items**: ignore — these are tasks, not calendar events
 - Each written item within a day column is a separate event
 - If ownership is ambiguous, assign to Family
+- A name or first initial accompanying an event designates the owner: "B" = Benton, "L" = Leo — this overrides any default assumption (e.g. "Bay City L" or "L Bay City" = Leo's basketball, not Benton's)
 - **Date numbers**: numbers written near the top of each day column (often in black) are the actual dates for that column — use them directly to assign YYYY-MM-DD
 - **Past dates are valid**: if a column's date has already passed, keep it as-is — do not advance it to the next occurrence. The family may not have erased old entries yet.
+- **Vertically-written or multi-column text**: text written vertically or spanning multiple day columns represents an event on each of those days — create a separate all-day event for each day it covers.
+- **Multi-day events**: an event written across multiple day columns — whether with an arrow, or just text spanning several cells — is a multi-day event; create an all-day event for each day it covers within the visible week. Examples: "Jason Trip to Conference" written across Mon–Wed = three all-day events.
 
 ## Output Format
 Return a JSON array of events. Each event:
