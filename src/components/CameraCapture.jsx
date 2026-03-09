@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import './CameraCapture.css'
 
-export default function CameraCapture({ onCapture, disabled }) {
+export default function CameraCapture({ onCapture, onCheckCorrections, disabled }) {
   const fileInputRef = useRef(null)
   const [preview, setPreview] = useState(null)
 
@@ -50,6 +50,15 @@ export default function CameraCapture({ onCapture, disabled }) {
             onChange={handleFileChange}
             style={{ display: 'none' }}
           />
+          {onCheckCorrections && localStorage.getItem('fridgecal_last_sync') && (
+            <button
+              className="btn-link"
+              onClick={onCheckCorrections}
+              style={{ marginTop: '1rem', background: 'none', border: 'none', color: '#1a73e8', fontSize: '0.9rem', cursor: 'pointer' }}
+            >
+              Check corrections from last sync
+            </button>
+          )}
         </div>
       ) : (
         <div className="capture-preview">

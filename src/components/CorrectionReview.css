@@ -1,0 +1,133 @@
+.correction-review {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.correction-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e8eaed;
+}
+
+.correction-header h2 {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.correction-count {
+  font-size: 0.85rem;
+  color: #5f6368;
+}
+
+.correction-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #5f6368;
+}
+
+.correction-error {
+  padding: 1rem;
+  background: #fce8e6;
+  color: #c5221f;
+  font-size: 0.9rem;
+}
+
+.correction-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f6368;
+  padding: 2rem;
+  text-align: center;
+}
+
+.correction-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.correction-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.correction-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.correction-deleted .correction-badge {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.correction-modified .correction-badge {
+  background: #fef7e0;
+  color: #e37400;
+}
+
+.correction-added .correction-badge {
+  background: #e6f4ea;
+  color: #1e8e3e;
+}
+
+.correction-desc {
+  font-size: 0.9rem;
+  color: #202124;
+  line-height: 1.4;
+}
+
+.correction-output {
+  padding: 1rem;
+  border-top: 1px solid #e8eaed;
+}
+
+.correction-output h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5f6368;
+  margin: 0 0 0.5rem;
+}
+
+.correction-code {
+  background: #f8f9fa;
+  border: 1px solid #e8eaed;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0 0 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.correction-footer {
+  padding: 1rem;
+  border-top: 1px solid #e8eaed;
+}
+
+.correction-footer .btn-secondary {
+  width: 100%;
+}

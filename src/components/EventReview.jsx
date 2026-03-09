@@ -9,7 +9,7 @@ const MEMBER_COLORS = {
   Family: '#5f6368',
 }
 
-export default function EventReview({ events, onBack, calendarConnected }) {
+export default function EventReview({ events, onBack, onCheckCorrections, calendarConnected }) {
   const [items, setItems] = useState(
     events.map((e, i) => ({ ...e, id: i, selected: true }))
   )
@@ -50,6 +50,12 @@ export default function EventReview({ events, onBack, calendarConnected }) {
       }
       setSyncResult(data)
       setSynced(true)
+      // Save synced events to localStorage for later correction checking
+      const syncedEvents = items.filter((i) => i.selected)
+      localStorage.setItem('fridgecal_last_sync', JSON.stringify({
+        events: syncedEvents,
+        syncedAt: new Date().toISOString(),
+      }))
     } catch (err) {
       setSyncError(err.message)
     } finally {
@@ -73,6 +79,11 @@ export default function EventReview({ events, onBack, calendarConnected }) {
         <button className="btn-primary" onClick={onBack}>
           Scan another calendar
         </button>
+        {onCheckCorrections && (
+          <button className="btn-secondary" onClick={onCheckCorrections} style={{ marginTop: '0.5rem' }}>
+            Check Corrections
+          </button>
+        )}
       </div>
     )
   }

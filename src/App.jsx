@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import CameraCapture from './components/CameraCapture'
 import EventReview from './components/EventReview'
+import CorrectionReview from './components/CorrectionReview'
 import './App.css'
 
 export default function App() {
-  const [view, setView] = useState('capture') // 'capture' | 'review'
+  const [view, setView] = useState('capture') // 'capture' | 'review' | 'corrections'
   const [parsedEvents, setParsedEvents] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -89,15 +90,24 @@ export default function App() {
       )}
 
       {view === 'capture' && (
-        <CameraCapture onCapture={handleImageCapture} disabled={isLoading} />
+        <CameraCapture
+          onCapture={handleImageCapture}
+          onCheckCorrections={() => setView('corrections')}
+          disabled={isLoading}
+        />
       )}
 
       {view === 'review' && (
         <EventReview
           events={parsedEvents}
           onBack={handleBack}
+          onCheckCorrections={() => setView('corrections')}
           calendarConnected={calendarConnected}
         />
+      )}
+
+      {view === 'corrections' && (
+        <CorrectionReview onBack={handleBack} />
       )}
     </div>
   )
