@@ -59,6 +59,11 @@ export default function CorrectionReview({ onBack }) {
       if (c.original.member && c.corrected.member && c.corrected.member !== c.original.member) {
         parts.push(`correct member is ${c.corrected.member}, not ${c.original.member}`)
       }
+      const origLoc = (c.original.location || '').trim()
+      const corrLoc = (c.corrected.location || '').trim()
+      if (corrLoc && corrLoc.toLowerCase() !== origLoc.toLowerCase()) {
+        parts.push(`location: ${corrLoc}`)
+      }
       return `"${c.original.title}" → ${parts.join('; ')}`
     })
     return lines.join('\n')

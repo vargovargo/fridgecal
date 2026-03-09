@@ -40,13 +40,20 @@ module.exports = async function handler(req, res) {
       maxResults: 500,
     })
 
-    const calendarEvents = (calRes.data.items || []).map((e) => ({
+    const allCalendarEvents = (calRes.data.items || []).map((e) => ({
       title: e.summary || '',
       date: (e.start?.date || e.start?.dateTime || '').slice(0, 10),
       time: e.start?.dateTime ? e.start.dateTime.slice(11, 16) : null,
       location: e.location || null,
       member: extractMember(e.description),
     }))
+
+    // Only consider calendar events whose title matches something we originally synced.
+    // This avoids flagging unrelated events that happen to fall in the same date range.
+    const origTitles = new Set(originalEvents.map((e) => e.title.toLowerCase().trim()))
+    const calendarEvents = allCalendarEvents.filter(
+      (ce) => origTitles.has(ce.title.toLowerCase().trim())
+    )
 
     const corrections = diffEvents(originalEvents, calendarEvents)
     return res.status(200).json({ corrections, calendarEvents })
@@ -113,6 +120,14 @@ function diffEvents(original, calendar) {
     }
     if (oe.member && best.member && best.member !== oe.member) {
       changes.push(`member: ${oe.member} → ${best.member}`)
+    }
+    // Detect location added or changed
+    const origLoc = (oe.location || '').trim()
+    const calLoc = (best.location || '').trim()
+    if (calLoc && calLoc.toLowerCase() !== origLoc.toLowerCase()) {
+      changes.push(origLoc
+        ? `location: ${origLoc} → ${calLoc}`
+        : `location added: ${calLoc}`)
     }
 
     if (changes.length > 0) {
