@@ -41,8 +41,14 @@ This file is injected as system context into every Claude API parse call. Update
 - **To Do column** (bottom of rightmost area): ignore — tasks, not calendar events
 - **Vertical cell structure**: each written item within a day column is a separate event
 - **Multi-day events**: text (or an arrow) spanning multiple day columns = one all-day event per day covered; applies to travel, trips, competitions, etc.
-- **Date numbers**: numbers near the top of each day column (often written in black) are the actual calendar dates for that column — use them to determine YYYY-MM-DD
-- **Past dates**: if a column's date has already passed, keep it as-is — do not advance it to the next week. The board may not have been erased/updated yet.
+
+### Date & Column Rules (critical — most common source of errors)
+- **Date numbers are ground truth**: numbers written near the top of each day column (often in black) are the actual calendar dates for that column. Always use them to determine YYYY-MM-DD. If a date number is visible, use it — do not infer dates from column position alone.
+- **Column alignment**: each day has a distinct vertical column. An event belongs to the column it is physically written inside. When text is near a column boundary, assign it to the column where the **majority** of the text falls. Do NOT assign one event to two adjacent days unless it clearly spans both columns (arrow, text stretching across the divider).
+- **Past dates — never shift forward**: if a column's date number has already passed relative to today, keep it exactly as written. Do NOT advance it to the next week or next month. The board may not have been erased yet. Example: if today is March 9 and a column says "5" (March 5), the date is 2026-03-05, not 2026-03-12.
+- **One entry = one event**: each distinct written item produces exactly one event on exactly one date, unless there is a clear visual indicator (arrow, spanning text) that it covers multiple days. Do NOT duplicate an event onto an adjacent day because it sits near a column border.
+- **Week boundaries**: the whiteboard typically shows Mon–Fri (or Mon–Sat). Use the date numbers to determine the exact week — do not assume the board always starts on Monday.
+- **Times — only when explicitly written**: only include a time if a time is actually written on the board for that entry, or if it is a well-known shorthand with a default time (e.g. OTF = 7:15am, CCT = 4pm). Do not guess or infer times from row position.
 
 ## Ownership Assignment
 
