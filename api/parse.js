@@ -23,6 +23,7 @@ You are parsing a family whiteboard calendar photo for the Vargo family. Extract
 - A name or first initial accompanying an event designates the owner: "B" = Benton, "L" = Leo — this overrides any default assumption (e.g. "Bay City L" or "L Bay City" = Leo's basketball, not Benton's)
 - **Date numbers**: numbers written near the top of each day column (often in black) are the actual dates for that column — use them directly to assign YYYY-MM-DD
 - **Past dates are valid**: if a column's date has already passed, keep it as-is — do not advance it to the next occurrence. The family may not have erased old entries yet.
+- **Valid times**: only assign times between 05:00 and 23:00. If parsed text implies a time outside this range it is almost certainly a misread — set time to null and treat it as all-day instead.
 - **Vertically-written or multi-column text**: text written vertically or spanning multiple day columns represents an event on each of those days — create a separate all-day event for each day it covers.
 - **Multi-day events**: an event written across multiple day columns — whether with an arrow, or just text spanning several cells — is a multi-day event; create an all-day event for each day it covers within the visible week. Examples: "Jason Trip to Conference" written across Mon–Wed = three all-day events.
 
@@ -41,12 +42,25 @@ Return a JSON array of events. Each event:
 If you cannot determine the year from context, assume the current year. Return ONLY the JSON array, no other text.
 `
 
+function formatCorrections(corrections) {
+  if (!Array.isArray(corrections) || corrections.length === 0) return ''
+  const lines = corrections.map((c) => {
+    const parts = Object.entries(c.fields).map(([field, { was, is }]) => {
+      const labels = { member: 'person', time: 'start time', endTime: 'end time', title: 'title', date: 'date', location: 'location' }
+      const label = labels[field] || field
+      return `${label}: "${was ?? 'none'}" → "${is ?? 'none'}"`
+    })
+    return `- "${c.original.title}" (${c.original.date}): ${parts.join(', ')}`
+  })
+  return `\n\n## Corrections from the last scan — if you see the same entries, apply these fixes:\n${lines.join('\n')}\n`
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { image } = req.body
+  const { image, corrections } = req.body
   if (!image || !image.startsWith('data:image/')) {
     return res.status(400).json({ error: 'Invalid image data' })
   }
@@ -56,6 +70,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const today = new Date().toISOString().split('T')[0]
+    const correctionBlock = formatCorrections(corrections)
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
@@ -69,7 +84,7 @@ module.exports = async function handler(req, res) {
             },
             {
               type: 'text',
-              text: FAMILY_CONTEXT + `\n\nToday's date is ${today}. All events on this whiteboard are within the next 2–3 weeks from today. Use this to assign correct year and month to each event.\n\nPlease parse this whiteboard calendar photo and return the events as JSON.`,
+              text: FAMILY_CONTEXT + correctionBlock + `\n\nToday's date is ${today}. All events on this whiteboard are within the next 2–3 weeks from today. Use this to assign correct year and month to each event.\n\nPlease parse this whiteboard calendar photo and return the events as JSON.`,
             },
           ],
         },

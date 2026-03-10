@@ -120,10 +120,17 @@ async function resizeImage(dataUrl, maxDimension = 1600) {
 
 async function parseWhiteboardImage(imageDataUrl) {
   const resized = await resizeImage(imageDataUrl)
+
+  let corrections = []
+  try {
+    const stored = localStorage.getItem('fridgecal_last_sync')
+    if (stored) corrections = JSON.parse(stored).corrections || []
+  } catch {}
+
   const res = await fetch('/api/parse', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: resized }),
+    body: JSON.stringify({ image: resized, corrections }),
   })
   if (!res.ok) {
     const { error } = await res.json().catch(() => ({ error: `Server error (${res.status})` }))
