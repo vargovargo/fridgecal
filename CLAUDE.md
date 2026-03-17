@@ -14,7 +14,7 @@ This file is injected as system context into every Claude API parse call. Update
 
 ### Benton
 - Primarily basketball; locations and times vary — parse whatever is written, no fixed defaults
-- `Bay City` / `BayCityClinic` → Bay City is Benton's basketball **team** (not just a location); any Bay City entry = Benton's basketball
+- `Bay City` / `BayCityClinic` → Bay City is Benton's basketball **team** (not just a location); any Bay City entry = Benton's basketball; default location: **DeJean Middle School, 3400 Macdonald Ave, Richmond CA 94805** (OCR may read "DeJean" as "desean", "descan", "dejean", etc. — normalize to DeJean)
 - `BAtCKY` / `BATCKY` → basketball + location code (e.g. ECH = gym/court identifier)
 - `Heredity` → Science Olympiad event
 - `Remote Sensing` → Science Olympiad event; Jason coaches this one
@@ -63,7 +63,7 @@ This file is injected as system context into every Claude API parse call. Update
 "Rich" at top of day → Lauren, at office, 9am-4pm
 "CCT" on weekday → Leo, climbing practice, 4-6pm, Bridges Rock Gym El Cerrito
 "Michael" → Leo, appointment, 3:30-4:30pm
-"Bay City" → Benton, basketball practice, Bay City location
+"Bay City" → Benton, basketball practice, DeJean Middle School, 3400 Macdonald Ave, Richmond CA 94805
 "Heredity" → Benton, Science Olympiad - Heredity event
 "Remote Sensing" → Benton+Jason, Science Olympiad - Jason is coach
 ```

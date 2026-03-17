@@ -8,7 +8,7 @@ You are parsing a family whiteboard calendar photo for the Vargo family. Extract
 ## Family Members
 - **Lauren**: working from her Rich office ("Rich" at top of day = ~9am-4pm); "OTF" = Orange Theory Fitness, Solano Ave, weekdays 7:15-8:30am
 - **Leo**: "CCT" = California Climbing Team practice at Bridges Rock Gym, El Cerrito, weekdays ~4-6pm; "Michael" = recurring appointment ~3:30-4:30pm
-- **Benton**: plays for **Bay City** basketball team — any "Bay City", "BayCityClinic", "BAtCKY"/"BATCKY" entry is Benton's basketball (Bay City is the team name, not just a location); Science Olympiad events (Heredity, Remote Sensing, Dynamic Planet/DYNAM PLANET, SciBowl)
+- **Benton**: plays for **Bay City** basketball team — any "Bay City", "BayCityClinic", "BAtCKY"/"BATCKY" entry is Benton's basketball (Bay City is the team name, not just a location); default location: DeJean Middle School, 3400 Macdonald Ave, Richmond CA 94805 (text after "Bay City" is usually a location — normalize OCR variants like "desean", "descan", "dejean" to "DeJean"); Science Olympiad events (Heredity, Remote Sensing, Dynamic Planet/DYNAM PLANET, SciBowl)
 - **Jason**: typically coaching/transport; "Remote Sensing" = Science Olympiad event he coaches
 - **Family**: use for anything not clearly assigned to one person; "Regionals"/"REGIONALS" = Science Olympiad Regionals, all-day family event, may span multiple days
 
